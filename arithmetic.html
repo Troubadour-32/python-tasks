@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Онбординг: Арифметика — задачи с подсказками</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #f5f7fa;
+            color: #1e293b;
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        h1 small {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #64748b;
+            background: #e2e8f0;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+        }
+
+        .subhead {
+            color: #475569;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #10b981;
+            padding-left: 1rem;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #ffffff;
+            color: #475569 !important;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 14px;
+            margin-bottom: 2rem;
+            border: 1.5px solid #cbd5e1;
+            transition: all 0.2s ease;
+        }
+
+        .btn-back:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+            transform: translateX(-3px);
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            padding: 1.75rem 2rem;
+            margin-bottom: 1.5rem;
+            transition: box-shadow 0.2s ease;
+            border: 1px solid #e9eef3;
+        }
+
+        .card:hover { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06); }
+
+        .task-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .task-number {
+            background: #10b981;
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+
+        .task-title { font-size: 1.2rem; font-weight: 600; color: #0f172a; }
+
+        .badge {
+            display: inline-block;
+            background: #d1fae5;
+            color: #047857;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .task-desc { color: #334155; margin-bottom: 1.25rem; padding-left: 0.25rem; }
+
+        .task-desc code {
+            background: #f1f5f9;
+            padding: 0.15rem 0.4rem;
+            border-radius: 6px;
+            font-size: 0.9em;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            color: #0f172a;
+        }
+
+        .hint-box {
+            background: #f8fafc;
+            border-left: 4px solid #f59e0b;
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-start;
+        }
+
+        .hint-icon { font-size: 1.25rem; line-height: 1.4; flex-shrink: 0; }
+        .hint-content { font-size: 0.95rem; color: #1e293b; }
+        .hint-content strong { color: #b45309; font-weight: 600; }
+        .hint-content ul { margin-top: 0.4rem; margin-left: 1.2rem; }
+        .hint-content li { margin-bottom: 0.25rem; }
+
+        .hint-content code {
+            background: #e2e8f0;
+            padding: 0.1rem 0.35rem;
+            border-radius: 5px;
+            font-size: 0.88em;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+        }
+
+        .btn-toggle {
+            background: transparent;
+            border: 1.5px solid #cbd5e1;
+            color: #475569;
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            margin-top: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .btn-toggle:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+            color: #0f172a;
+        }
+
+        .solution-placeholder {
+            margin-top: 1rem;
+            padding: 1rem 1.25rem;
+            background: #f1f5f9;
+            border-radius: 12px;
+            border: 1px dashed #cbd5e1;
+            display: none;
+        }
+
+        .solution-placeholder.visible { display: block; }
+
+        .solution-placeholder pre {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 1rem 1.25rem;
+            border-radius: 14px;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .footer-note {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-top: 2.5rem;
+        }
+
+        .ops-table {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 1rem 1.25rem;
+            border-radius: 14px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+
+        .ops-table span.op { color: #7dd3fc; font-weight: bold; }
+        .ops-table span.comment { color: #64748b; }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem 0.75rem; }
+            .card { padding: 1.25rem; }
+            h1 { font-size: 1.5rem; }
+            .task-title { font-size: 1.05rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            ➗ Онбординг: Арифметика
+            <small>20 мин</small>
+        </h1>
+        <p class="subhead">
+            Шесть задач на знаки <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>.
+            Решения скрыты — сначала попробуй сам, а потом проверь подсказку.
+        </p>
+
+        <a href="index.html" class="btn-back">
+            ← Назад к задачам вывода
+        </a>
+
+        <div class="ops-table">
+<span class="op">+</span>  сложение       <span class="comment"># 5 + 3   →  8</span>
+<span class="op">-</span>  вычитание      <span class="comment"># 10 - 4  →  6</span>
+<span class="op">*</span>  умножение      <span class="comment"># 6 * 7   →  42</span>
+<span class="op">/</span>  деление        <span class="comment"># 20 / 4  →  5.0</span>
+        </div>
+
+        <!-- ЗАДАЧА 1 -->
+        <div class="card">
+            <div class="task-header">
+                <span class="task-number">1</span>
+                <span class="task-title">Сложение: корзина с фруктами</span>
+                <span class="badge">+</span>
+            </div>
+            <div class="task-desc">
+                В корзине лежат яблоки и груши: <code>17</code> яблок и <code>25</code> груш.
+                <br><br>
+                Напиши программу, которая выводит на экран общее количество фруктов с пометкой:
+                <br>
+                <code>Всего фруктов:</code>
+            </div>
+            <div class="hint-box">
+                <div class="hint-icon">💡</div>
+                <div class="hint-content">
+                    <strong>Подсказка:</strong>
+                    <ul>
+                        <li>Подумай, какое действие объединяет два количества в одно общее.</li>
+                        <li>В <code>print()</code> можно передать два аргумента через запятую: сначала текст в кавычках, потом выражение с числами.</li>
+                        <li>Python сам посчитает результат выражения и подставит его в вывод.</li>
+                    </ul>
+                </div>
+            </div>
+            <button class="btn-toggle" onclick="toggleSolution('a1')">👀 Показать решение</button>
+            <div id="a1" class="solution-placeholder">
+                <pre>print('Всего фруктов:', 17 + 25)</pre>
+            </div>
+        </div>
+
+        <!-- ЗАДАЧА 2 -->
+        <div class="card">
+            <div class="task-header">
+                <span class="task-number">2</span>
+                <span class="task-title">Вычитание: сдача в магазине</span>
+                <span class="badge">−</span>
+            </div>
+            <div class="task-desc">
+                Покупатель дал кассиру <code>1000</code> рублей, а покупка стоила <code>637</code> рублей.
+                <br><br>
+                Напиши программу, которая выводит сдачу двумя строками:
+                <br>
+                <code>Покупка: 637</code><br>
+                <code>Сдача:</code> и рядом — результат
+            </div>
+            <div class="hint-box">
+                <div class="hint-icon">💡</div>
+                <div class="hint-content">
+                    <strong>Подсказка:</strong>
+                    <ul>
+                        <li>Первая строка выводится просто как текст — число можно вписать прямо в кавычки.</li>
+                        <li>Для второй строки подумай: как из суммы, которую дал покупатель, получить то, что кассир вернёт?</li>
+                        <li>Используй <code>print()</code> с двумя аргументами: строка с подписью и выражение.</li>
+                    </ul>
+                </div>
+            </div>
+            <button class="btn-toggle" onclick="toggleSolution('a2')">👀 Показать решение</button>
+            <div id="a2" class="solution-placeholder">
+                <pre>print('Покупка: 637')
+print('Сдача:', 1000 - 637)</pre>
+            </div>
+        </div>
+
+        <!-- ЗАДАЧА 3 -->
+        <div class="card">
+            <div class="task-header">
+                <span class="task-number">3</span>
+                <span class="task-title">Умножение: коробки с печеньем</span>
+                <span class="badge">*</span>
+            </div>
+            <div class="task-desc">
+                На складе стоит <code>24</code> коробки, в каждой по <code>15</code> пачек печенья.
+                <br><br>
+                Напиши программу, которая выводит общее количество пачек с пометкой:
+                <br>
+                <code>Всего пачек печенья:</code>
+            </div>
+            <div class="hint-box">
+                <div class="hint-icon">💡</div>
+                <div class="hint-content">
+                    <strong>Подсказка:</strong>
+                    <ul>
+                        <li>У нас много одинаковых коробок, в каждой одинаковое число пачек. Какое действие подходит, когда нужно повторить одно и то же много раз?</li>
+                        <li>В Python это действие записывается знаком <code>*</code> (звёздочка).</li>
+                        <li>Не забудь передать в <code>print()</code> подпись и выражение.</li>
+                    </ul>
+                </div>
+            </div>
+            <button class="btn-toggle" onclick="toggleSolution('a3')">👀 Показать решение</button>
+            <div id="a3" class="solution-placeholder">
+                <pre>print('Всего пачек печенья:', 24 * 15)</pre>
+            </div>
+        </div>
+
+        <!-- ЗАДАЧА 4 -->
+        <div class="card">
+            <div class="task-header">
+                <span class="task-number">4</span>
+                <span class="task-title">Деление: пицца на друзей</span>
+                <span class="badge">/</span>
+            </div>
+            <div class="task-desc">
+                <code>8</code> кусков пиццы нужно разделить поровну между <code>4</code> друзьями.
+                <br><br>
+                Напиши программу, которая выводит, сколько кусков достанется каждому:
+                <br>
+                <code>Каждому достанется кусков:</code>
+            </div>
+            <div class="hint-box">
+                <div class="hint-icon">💡</div>
+                <div class="hint-content">
+                    <strong>Подсказка:</strong>
+                    <ul>
+                        <li>В задаче нужно разделить одно число на другое — подумай, какой знак за это отвечает.</li>
+                        <li>В Python деление записывается обычным слэшем <code>/</code> (он находится на клавише с вопросительным знаком).</li>
+                        <li>Не пугайся, если в ответе получится число с точкой — это нормально для деления.</li>
+                    </ul>
+                </div>
+            </div>
+            <button class="btn-toggle" onclick="toggleSolution('a4')">👀 Показать решение</button>
+            <div id="a4" class="solution-placeholder">
+                <pre>print('Каждому достанется кусков:', 8 / 4)</pre>
+            </div>
+        </div>
+
+        <!-- ЗАДАЧА 5 -->
+        <div class="card">
+            <div class="task-header">
+                <span class="task-number">5</span>
+                <span class="task-title">Комбинация: бюджет поездки</span>
+                <span class="badge">+ − *</span>
+            </div>
+            <div class="task-desc">
+                Ты копишь на поездку. Каждый месяц откладываешь по <code>7500</code> рублей.
+                Уже накопил <code>12000</code>, но потратил <code>3200</code> на подарок.
+                <br><br>
+                Посчитай, сколько денег останется через <code>6</code> месяцев после этих трат,
+                и выведи результат в таком виде:
+                <br>
+                <code>Итоговая сумма через 6 месяцев:</code>
+            </div>
+            <div class="hint-box">
+                <div class="hint-icon">💡</div>
+                <div class="hint-content">
+                    <strong>Подсказка:</strong>
+                    <ul>
+                        <li>Разбей задачу на три части: что было сначала, что потратил, что добавилось за 6 месяцев.</li>
+                        <li>«Откладывать каждый месяц 6 месяцев» — это повторение одного и того же, значит тут работает умножение.</li>
+                        <li>Все три части можно записать одним выражением, соблюдая порядок: сначала отнимаем трату, потом прибавляем накопления.</li>
+                        <li>Python сам расставит приоритеты: умножение выполнится раньше сложения и вычитания.</li>
+                    </ul>
+                </div>
+            </div>
+            <button class="btn-toggle" onclick="toggleSolution('a5')">👀 Показать решение</button>
+            <div id="a5" class="solution-placeholder">
+                <pre>print('Итоговая сумма через 6 месяцев:', 12000 - 3200 + 7500 * 6)</pre>
+            </div>
+        </div>
+
+        <!-- ЗАДАЧА 6 -->
+        <div class="card">
+            <div class="task-header">
+                <span class="task-number">6</span>
+                <span class="task-title">Комбинация: средний чек</span>
+                <span class="badge">+ / ( )</span>
+            </div>
+            <div class="task-desc">
+                За день в кафе было <code>4</code> заказа на суммы:
+                <code>850</code>, <code>1200</code>, <code>640</code> и <code>910</code> рублей.
+                <br><br>
+                Напиши программу, которая выводит:
+                <br>
+                <code>Общая выручка:</code> — сумма всех заказов<br>
+                <code>Средний чек:</code> — выручка, делённая на 4
+            </div>
+            <div class="hint-box">
+                <div class="hint-icon">💡</div>
+                <div class="hint-content">
+                    <strong>Подсказка:</strong>
+                    <ul>
+                        <li>Первая строка — просто сумма всех четырёх чисел через <code>+</code>.</li>
+                        <li>Вторая строка сложнее: среднее — это «общее, поделённое на количество».</li>
+                        <li>Обрати внимание: если просто написать <code>850 + 1200 + 640 + 910 / 4</code>, Python поделит только последнее число. Как сгруппировать всю сумму? Подсказка: скобки.</li>
+                        <li>Помни: результат деления будет с точкой — это нормально.</li>
+                    </ul>
+                </div>
+            </div>
+            <button class="btn-toggle" onclick="toggleSolution('a6')">👀 Показать решение</button>
+            <div id="a6" class="solution-placeholder">
+                <pre>print('Общая выручка:', 850 + 1200 + 640 + 910)
+print('Средний чек:', (850 + 1200 + 640 + 910) / 4)</pre>
+            </div>
+        </div>
+
+        <p class="footer-note">
+            🧠 Сначала попробуй решить сам. Если не получается — открой подсказку,
+            а решение смотри только в крайнем случае.
+        </p>
+    </div>
+
+    <script>
+        function toggleSolution(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.classList.toggle('visible');
+            const btn = el.previousElementSibling;
+            btn.textContent = el.classList.contains('visible')
+                ? '🙈 Скрыть решение'
+                : '👀 Показать решение';
+        }
+    </script>
+</body>
+</html>
